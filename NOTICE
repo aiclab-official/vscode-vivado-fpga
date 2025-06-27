@@ -1,0 +1,24 @@
+VSCode Vivado FPGA Development Environment
+Copyright (c) 2025 AICLAB
+
+This software contains components from the following sources:
+
+===============================================================================
+
+Xilinx Vivado Design Suite
+Copyright (c) Xilinx, Inc.
+Used under Xilinx Software License Agreement
+
+===============================================================================
+
+VSCode Task Runner Templates
+Portions adapted from Microsoft VSCode documentation
+Available under MIT License
+
+===============================================================================
+
+TCL Script Examples
+Portions adapted from Xilinx UG835 - Vivado Design Suite Tcl Command Reference Guide
+Available under Xilinx documentation license
+
+===============================================================================
