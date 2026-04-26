@@ -1,44 +1,92 @@
-# vscode-vivado-fpga
-A comprehensive development environment for FPGA design using Visual Studio Code integrated with Xilinx Vivado Design Suite. This repository provides a complete workflow for compiling, synthesizing, simulating, and programming Xilinx FPGAs directly from VSCode using Vivado command-line tools and TCL scripts.
+# FPGA Vivado VSCode Project
 
-## Features
+This project demonstrates how to use Xilinx Vivado with Visual Studio Code for FPGA design and simulation. It includes examples in Verilog, VHDL, and SystemVerilog, along with Tcl scripts to automate the workflow.
 
-- **Integrated Development**: Complete FPGA development workflow within VSCode
-- **Automated Build System**: TCL scripts for synthesis, implementation, and bitstream generation
-- **Simulation Support**: Integrated testbench simulation with waveform viewing
-- **Device Programming**: Direct FPGA programming from VSCode tasks
-- **Multi-Language Support**: Verilog, VHDL, and SystemVerilog support
-- **Project Templates**: Ready-to-use examples and project templates
-- **Version Control Friendly**: Optimized .gitignore for FPGA projects
+## Project Structure
 
-## Supported Workflows
+```
+fpga-vivado-vscode
+├── src
 
-- **Compilation**: Syntax checking and elaboration
-- **Synthesis**: RTL to netlist conversion with optimization
-- **Simulation**: Behavioral and post-synthesis simulation
-- **Implementation**: Place and route with timing closure
-- **Programming**: Bitstream generation and device programming
+├── scripts
 
-## Requirements
+├── .vscode
 
-- Xilinx Vivado Design Suite (2020.1 or later)
-- Visual Studio Code
-- Xilinx FPGA development board
-- TCL support (included with Vivado)
+└── README.md
+```
 
-## Quick Start
+## Getting Started
 
-1. Clone this repository
-2. Open in VSCode
-3. Configure Vivado paths in `.vscode/settings.json`
-4. Use Ctrl+Shift+P → "Tasks: Run Task" to access FPGA workflows
-5. Start with examples in the `examples/` directory
 
-## Target Devices
+### Prerequisites
 
-Compatible with all Xilinx FPGA families supported by Vivado:
-- Zynq-7000, Zynq UltraScale+
-- Kintex-7, Kintex UltraScale, Kintex UltraScale+
-- Virtex-7, Virtex UltraScale, Virtex UltraScale+
-- Artix-7
-- Spartan-7
+- Xilinx Vivado installed on your machine.
+- Visual Studio Code with the necessary extensions for Tcl and FPGA development.
+
+### Install Vivado
+
+- Xilinx's Downloads page: https://www.xilinx.com/support/download.html
+- Download `Self Extracting Web Installer`
+- Change to the directrory
+- chmod +x <installer>.bin && sudo ./<installer>.bin
+- After installation completed successfully:
+  - Run `the installLibs.sh` as it is shown in the window.
+- Install USB driver: 
+  - `cd /tools/Xilinx/Vivado/2024.2/data/xicom/cable_drivers/lin64/install_script/install_drivers/`
+  - `sudo ./install_drivers`
+- To open the Vivado from new terminal session, add this to the ~/.bashrc:
+  - `source /tools/Xilinx/Vivado/2024.2/settings64.sh`
+
+### Add VScode extension:
+
+- Verilog-HDL/SystemVerilog/Bluespec SystemVerilog: 
+    - https://www.youtube.com/watch?v=-DTGf3Z6v_o
+    - Install Universal Ctags
+    - A path to the installation of Universal Ctags: 
+      - /tools/ctags/bin/
+    - Verilog › Linting: Linter: 
+      - xvlog
+    - Verilog › Linting: Path 
+      - /tools/Xilinx/Vivado/2024.2/bin/
+- Enable "Go to Definition (F12) "
+    - Install Ctags Companion extension
+    - Install Universal Ctags:
+      - sudo apt-get install universal-ctags
+      - Add settings.json:        
+        ```
+        {
+            "verilog.ctags.path": "/tools/ctags/bin/",
+            "ctags-companion.command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --languages=SystemVerilog -R .",
+            "verilog.linting.xvlog.includePath": [
+                "${workspaceFolder}"
+            ],
+            "verilog.linting.linter": "xvlog"
+
+
+        }
+        ```
+      - Generate tags file:
+        ```
+        # Run from project root
+        ctags -R --fields=+nKz --languages=SystemVerilog --langmap=SystemVerilog:+.sv,+.v,+.svh -R rtl .
+        ```
+
+
+
+
+
+
+### File Descriptions
+
+
+### Usage
+
+
+
+### Contributing
+
+Feel free to contribute to this project by adding more examples or improving the scripts. 
+
+### License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.

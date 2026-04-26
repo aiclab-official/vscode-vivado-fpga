@@ -1,0 +1,8 @@
+{
+  "verilog.ctags.path": "/tools/ctags/bin/",
+  "ctags-companion.command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --languages=SystemVerilog -R .",
+  "verilog.linting.xvlog.includePath": [
+    "${workspaceFolder}"
+  ],
+  "verilog.linting.linter": "xvlog"
+}
