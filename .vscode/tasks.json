@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Generate SystemVerilog CTags",
+      "label": "Generate RTL CTags",
       "type": "shell",
-      "command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --languages=SystemVerilog -R .",
+      "command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --langmap=VHDL:+.vhd.vhdl --languages=SystemVerilog,VHDL -R .",
       "options": {
         "cwd": "${workspaceFolder}"
       },

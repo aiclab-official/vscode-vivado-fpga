@@ -22,6 +22,7 @@ module fullAdder (
     input  logic a, b, cin,
     output logic sum, cout
 );
+    timeunit 1ns; timeprecision 100ps;
     logic s1, c1, c2;
 
     halfAdder ha1 (.a(a), .b(b), .sum(s1), .cout(c1));

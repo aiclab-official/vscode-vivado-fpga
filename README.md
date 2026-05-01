@@ -1,92 +1,175 @@
-# FPGA Vivado VSCode Project
+# FPGA Vivado + VS Code RTL Workflow
 
-This project demonstrates how to use Xilinx Vivado with Visual Studio Code for FPGA design and simulation. It includes examples in Verilog, VHDL, and SystemVerilog, along with Tcl scripts to automate the workflow.
+This repository shows a practical workflow to develop RTL in VS Code and simulate with Vivado tools.
+It supports mixed-language designs (VHDL + Verilog/SystemVerilog), includes task automation, and provides a Tcl script to create a Vivado project from filelists.
+
+## What You Can Do in This Project
+
+- Edit RTL in VS Code with real-time syntax checking.
+- Jump to definitions with CTags (`F12`).
+- Run compile/elaborate/simulation from a Makefile.
+- Open waveforms from the same Makefile flow.
+- Create a Vivado GUI project from Tcl using the same filelists.
 
 ## Project Structure
 
+```text
+vscode-vivado-fpga
+├── .vscode/
+│   ├── settings.json
+│   ├── tasks.json
+│   └── launch.json
+├── scripts/
+│   ├── Makefile
+│   ├── create_project.tcl
+│   ├── filelist_sv.f
+│   ├── filelist_vhdl.f
+│   ├── filelist_tb.f
+│   ├── xsim_cfg.tcl
+│   └── test_fullAdder_wave.wcfg
+├── src/
+│   ├── systemverilog/
+│   │   ├── halfAdder.sv
+│   │   └── fullAdder.sv
+│   └── vhdl/
+│       ├── halfAdder.vhd
+│       └── fullAdder.vhd
+└── tb/
+    ├── tb_utils_pkg.sv
+    └── test_fullAdder.sv
 ```
-fpga-vivado-vscode
-├── src
 
-├── scripts
+## Prerequisites
 
-├── .vscode
+- Xilinx Vivado installed and available in `PATH`.
+- Visual Studio Code.
+- GNU Make.
+- Universal CTags.
+- Recommended on Linux/macOS: Bash available.
+- Recommended on Windows: PowerShell and Vivado tools in `PATH`.
 
-└── README.md
+The Makefile includes a `check-env` target and will fail early if Vivado tools are missing.
+
+## Install and Configure Vivado
+
+1. Download Vivado installer from:
+   `https://www.xilinx.com/support/download.html`
+2. Install Vivado.
+3. Add Vivado environment setup to your shell startup file.
+
+Example for Linux Bash:
+
+```bash
+source /tools/Xilinx/Vivado/2024.2/settings64.sh
 ```
 
-## Getting Started
+## VS Code Extensions and Settings
 
+Install:
 
-### Prerequisites
+- Verilog-HDL/SystemVerilog/Bluespec SystemVerilog extension.
+- Ctags Companion extension.
+- Universal CTags on your machine.
 
-- Xilinx Vivado installed on your machine.
-- Visual Studio Code with the necessary extensions for Tcl and FPGA development.
+Current workspace settings are in `.vscode/settings.json`:
 
-### Install Vivado
+```json
+{
+  "verilog.ctags.path": "/tools/ctags/bin/",
+  "ctags-companion.command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --langmap=VHDL:+.vhd.vhdl --languages=SystemVerilog,VHDL -R .",
+  "verilog.linting.xvlog.includePath": [
+    "${workspaceFolder}"
+  ],
+  "verilog.linting.linter": "xvlog"
+}
+```
 
-- Xilinx's Downloads page: https://www.xilinx.com/support/download.html
-- Download `Self Extracting Web Installer`
-- Change to the directrory
-- chmod +x <installer>.bin && sudo ./<installer>.bin
-- After installation completed successfully:
-  - Run `the installLibs.sh` as it is shown in the window.
-- Install USB driver: 
-  - `cd /tools/Xilinx/Vivado/2024.2/data/xicom/cable_drivers/lin64/install_script/install_drivers/`
-  - `sudo ./install_drivers`
-- To open the Vivado from new terminal session, add this to the ~/.bashrc:
-  - `source /tools/Xilinx/Vivado/2024.2/settings64.sh`
+This gives you:
 
-### Add VScode extension:
+- Real-time syntax feedback using `xvlog`.
+- CTags support for navigation.
 
-- Verilog-HDL/SystemVerilog/Bluespec SystemVerilog: 
-    - https://www.youtube.com/watch?v=-DTGf3Z6v_o
-    - Install Universal Ctags
-    - A path to the installation of Universal Ctags: 
-      - /tools/ctags/bin/
-    - Verilog › Linting: Linter: 
-      - xvlog
-    - Verilog › Linting: Path 
-      - /tools/Xilinx/Vivado/2024.2/bin/
-- Enable "Go to Definition (F12) "
-    - Install Ctags Companion extension
-    - Install Universal Ctags:
-      - sudo apt-get install universal-ctags
-      - Add settings.json:        
-        ```
-        {
-            "verilog.ctags.path": "/tools/ctags/bin/",
-            "ctags-companion.command": "ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --languages=SystemVerilog -R .",
-            "verilog.linting.xvlog.includePath": [
-                "${workspaceFolder}"
-            ],
-            "verilog.linting.linter": "xvlog"
+## Enable Go To Definition (F12)
 
+1. Open the **Run and Debug** panel in VS Code.
+2. Select task/config: **Generate RTL CTags**.
+3. Click the green play button.
+4. Use `F12` on symbols to jump to definitions.
 
-        }
-        ```
-      - Generate tags file:
-        ```
-        # Run from project root
-        ctags -R --fields=+nKz --languages=SystemVerilog --langmap=SystemVerilog:+.sv,+.v,+.svh -R rtl .
-        ```
+The task is defined in `.vscode/tasks.json` and runs:
 
+```bash
+ctags --fields=+nKz --langmap=SystemVerilog:+.v.sv.svh --langmap=VHDL:+.vhd.vhdl --languages=SystemVerilog,VHDL -R .
+```
 
+## Simulation Flow (Makefile)
 
+Run from the `scripts` directory.
 
+```bash
+cd scripts
+make all
+```
 
+This performs:
 
-### File Descriptions
+1. Toolchain check.
+2. VHDL compile (`xvhdl`) from `filelist_vhdl.f`.
+3. SystemVerilog RTL compile (`xvlog`) from `filelist_sv.f`.
+4. Testbench compile (`xvlog`) from `filelist_tb.f`.
+5. Elaboration (`xelab`).
+6. Simulation (`xsim`).
 
+To open waveform viewer:
 
-### Usage
+```bash
+make wave
+```
 
+Useful helper targets:
 
+```bash
+make clean
+make clean-all
+```
 
-### Contributing
+## Filelists
 
-Feel free to contribute to this project by adding more examples or improving the scripts. 
+The build flow is driven by three filelists in `scripts/`:
 
-### License
+- `filelist_vhdl.f`: VHDL design files.
+- `filelist_sv.f`: SystemVerilog/Verilog design files.
+- `filelist_tb.f`: testbench and verification files.
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+Keep these filelists updated when adding files.
+
+## Create Vivado Project from Tcl
+
+1. Open Vivado.
+2. Go to **Tools -> Run Tcl Script...**
+3. Select `scripts/create_project.tcl`.
+4. Vivado reads all three filelists and creates the project.
+5. In Tcl console, confirm this message appears:
+
+```text
+Project created successfully!
+```
+
+## Notes
+
+- The Tcl script sets:
+  - source top: `fullAdder`
+  - simulation top: `test_fullAdder`
+- The Makefile automatically extracts simulation top from `filelist_tb.f` by looking for `test_*.sv`.
+
+## Contributing
+
+Contributions are welcome. Suggested improvements:
+
+- Add new RTL examples.
+- Add new testbenches.
+- Add CI checks for lint/build/sim.
+
+## License
+
+See `LICENSE` for license details.

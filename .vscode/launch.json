@@ -2,11 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run: Generate SystemVerilog CTags",
+      "name": "Run: Generate RTL CTags",
       "type": "node-terminal",
       "request": "launch",
-      "command": "echo CTags generation finished.",
-      "preLaunchTask": "Generate SystemVerilog CTags"
+      "command": "echo CTags generation finished. && exit",
+      "preLaunchTask": "Generate RTL CTags"
     }
   ]
 }

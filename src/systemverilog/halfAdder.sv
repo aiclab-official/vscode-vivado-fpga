@@ -18,6 +18,7 @@ module halfAdder (
     input  logic a, b,
     output logic sum, cout
 );
+    timeunit 1ns; timeprecision 100ps;
     assign sum  = a ^ b;
     assign cout = a & b;
 endmodule : halfAdder
